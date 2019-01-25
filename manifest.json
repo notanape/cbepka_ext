@@ -1,0 +1,42 @@
+{
+    "manifest_version": 2,
+    "name": "CBEPKA",
+    "version": "1.0",
+
+    "browser_action": {
+        "default_icon": {
+            "128": "img/logo.png",
+            "16": "img/logo.png",
+            "48": "img/logo.png"
+        },
+        "default_title": "CBEPKA"/*,
+        "default_popup": "popup.html"*/
+    },
+    "icons": {
+        "128": "img/logo.png",
+        "16": "img/logo.png",
+        "48": "img/logo.png"
+    },
+
+    "background": {
+        "scripts": ["js/jq.js", "js/back_var.js", "js/fun.js", "js/background.js"]
+    },
+
+    "externally_connectable": {
+        "matches": ["http://watchteam.ml/*", "http://localhost:8808/*"]
+    },
+
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "management",
+        "contentSettings",
+        "system.display",
+        "<all_urls>"
+    ],
+
+    "content_scripts": [{
+        "matches": ["http://watchteam.ml/cbepka/*", "http://localhost:8808/cbepka/*"],
+        "js": ["js/jq.js"]
+    }]
+}
