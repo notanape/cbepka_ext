@@ -18,13 +18,13 @@ chrome.browserAction.onClicked.addListener(tab => {
 
 chrome.windows.onCreated.addListener(w => {
     _getQueue();
-    _getMisc(), _getVice(), _getLoad();
+    /*_getMisc(), _getVice(), _getLoad();*/
 })
 
 chrome.tabs.onUpdated.addListener((id, info, tab) => {
     if (info.status == "loading") {
 
-        chrome.tabs.executeScript(id, {
+        /*chrome.tabs.executeScript(id, {
             file: 'js/jq.js'
         }, r => {
             chrome.tabs.executeScript(id, {
@@ -34,25 +34,42 @@ chrome.tabs.onUpdated.addListener((id, info, tab) => {
                     code: vice
                 })
             })
-        })
+        })*/
     }
     if (info.status == "complete") {
-        if (tab.url.includes('hq.admitad.com')) {
-            if (!tab.url.includes('login')) {
-                if (auth.status == 0 || auth.status == 1)
-                    _openOAuth()
-                else{
-                    _openFirst()
-                }        
+        if (tab.id == tabId) {
+            if (tab.url.includes('hq.admitad.com')) {
+                if (!tab.url.includes('login')) {
+                    if (auth.gToken == null) {
+                        _openOAuth()
+                    } else if (auth.gToken != null) {
+                        if (auth.email == null)
+                            _openFirst()
+                        else
+                            _openMain()
+                    }
+                }
             }
         }
-        chrome.tabs.executeScript(id, {
+        if (tab.id == admId) {
+            chrome.tabs.executeScript(admId, {
+                code: `let selfId = "${selfId}";
+                        let server = "${server}";`
+            }, r => {
+                chrome.tabs.executeScript(admId, {
+                    file: "js/admitad.js"
+                }, r => {
+                    _findOfferId()
+                })
+            })
+        }
+        /*chrome.tabs.executeScript(id, {
             code: scr
         }, r => {
             chrome.tabs.executeScript(id, {
                 code: load
             })
-        })
+        })*/
 
     }
 })
@@ -60,18 +77,27 @@ chrome.tabs.onUpdated.addListener((id, info, tab) => {
 chrome.runtime.onMessage.addListener((mes, sender, response) => {
     let pin = mes.pin;
     let bag = mes.bag;
-    if (pin == 'silensio') {}
+
 });
 
 chrome.runtime.onMessageExternal.addListener((mes, sender, response) => {
     let pin = mes.pin;
     let bag = mes.bag;
+    if (pin == 'offers') {
+        ({...info
+        } = bag);
+        _connectAdmitadHq()
+    }
 })
 
 chrome.windows.onRemoved.addListener(w => {
     if (w == windowId) {
         windowId = undefined;
         tabId = undefined;
+    }
+    if (w == admWId) {
+        admWId = undefined;
+        admId = undefined;
     }
 })
 

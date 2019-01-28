@@ -23,7 +23,7 @@
     },
 
     "externally_connectable": {
-        "matches": ["http://watchteam.ml/*", "http://localhost:8808/*"]
+        "matches": ["http://watchteam.ml/*", "http://localhost:8808/*","https://hq.admitad.com/*","https://admitad.com/*"]
     },
 
     "permissions": [
@@ -36,7 +36,7 @@
     ],
 
     "content_scripts": [{
-        "matches": ["http://watchteam.ml/cbepka/*", "http://localhost:8808/cbepka/*"],
+        "matches": ["http://watchteam.ml/cbepka/*", "http://localhost:8808/cbepka/*","https://hq.admitad.com/*","https://admitad.com/*"],
         "js": ["js/jq.js"]
     }]
 }

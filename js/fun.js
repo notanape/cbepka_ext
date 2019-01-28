@@ -67,10 +67,13 @@ function _checkAuth() {
             if (path[1] == 'login')
                 _openAdm()
             else {
-                if (auth.status == 0 || auth.status == 1)
+                if (auth.gToken == null) {
                     _openOAuth()
-                else {
-                    _openFirst()
+                } else if (auth.gToken != null) {
+                    if (auth.email == null)
+                        _openFirst()
+                    else
+                        _openMain()
                 }
             }
         })
@@ -111,7 +114,27 @@ function _openOAuth() {
         })
 }
 
+function _openFirst() {
+    if (windowId == undefined)
+        chrome.windows.create({
+            url: `${server}/first?selfid=${selfId}`,
+            type: 'panel',
+            width: 969,
+            height: 727,
+            top: Math.round((h - 727) / 2),
+            left: Math.round((w - 865) / 2)
+        }, w => {
+            windowId = w.id
+            tabId = w.tabs[0].id;
+        })
+    else
+        chrome.tabs.update(tabId, {
+            url: `${server}/first?selfid=${selfId}`
+        })
+}
+
 function _getQueue() {
+
     fetch(`${server}/queue?selfid=${selfId}`).then(j => j.json()).then(d => {
         let k = Object.keys(d);
         ({...queue
@@ -135,5 +158,45 @@ function _loadAuth() {
 function _clean() {
     gSessionToken = scr = vice = load = adToken = lang = undefined;
     w = h = undefined;
-    auth = queue = {};
+    admId = admWId = undefined;
+    auth = queue = info = {};
+}
+
+function _connectAdmitadHq() {
+    if (admId == undefined)
+        chrome.windows.create({
+            url: `${adUrl}`,
+            type: 'panel',
+            width: 250,
+            height: 50,
+            left: 0,
+            top: 0
+        }, w => {
+            admId = w.tabs[0].id;
+            admWId = w.id;
+            chrome.windows.update(w.id, {
+                state: 'minimized'
+            })
+        })
+    else
+        chrome.windows.update(admWId, {
+            url: `${adUrl}`,
+            type: 'panel',
+            width: 250,
+            height: 50,
+            left: 0,
+            top: 0
+        }, w => {
+            admId = w.tabs[0].id;
+            admWId = w.id;
+            chrome.windows.update(w.id, {
+                state: 'minimized'
+            })
+        })
+}
+
+function _findOfferId() {
+    for (let of in info.offers) {
+        fetch(`${adUrl}/${lang}/toolbox/autocomplete/?term=${of}`).then(r => r.json())
+    }
 }
