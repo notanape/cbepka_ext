@@ -10,13 +10,17 @@ let imD = 'img/logoD.png';
 let gSessionToken, gAccessToken, adToken;
 
 let selfId, windowId, tabId, lang;
-let admId, admWId
-
+let admId, admWId;
+let mainId, mainWId;
+let dateDown;
+let linker;
 let scr, vice, load;
 
 let auth = {};
 
 let info = {};
+
+let process = {};
 
 let queue;
 

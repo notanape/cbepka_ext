@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans|Source+Sans+Pro|Marmelad");
+
+$headFont: "Source Sans Pro";
+$capFont: "Noto Sans";
+$textFont: "Marmelad";
+
+$neutralColor: #f7cf36;
+$neutralColorHover: darken($neutralColor, 10%);
+
+$rightColor: #565656;
+$wrongColor: #fd4141;
+
+$rightBColor: #b3b3b3;
+$wrongBColor: #fd4141;
+
+* {
+    font-family: $headFont;
+    color: #522f00;
+    font-size: 0.98em;
+}
+
+.h, .myButton {
+    font-family: $capFont;
+}
+
+.myButton {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #585858;
+    padding: 8px 15px;
+    border-radius: 30px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+}
+
+.neutral {
+    background: $neutralColor;
+}
+
+.neutral:hover {
+    background: $neutralColorHover;
+}
+
+.h {
+    padding: 0 5px 2px;
+}
+
+input, textarea {
+    outline: none;
+    font-family: $textFont;
+    outline: none;
+    letter-spacing: 0.09em;
+    font-size: 1em;
+    font-weight: 600;
+    padding: 2px 5px;
+    color: $rightColor;
+    border-radius: 3px;
+    border: 1px solid $rightBColor;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #e0e0e0;
+}
+
+.at {
+    color: $wrongColor;
+    border: 1px solid $wrongBColor;
+}

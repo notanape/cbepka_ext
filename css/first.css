@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans|Source+Sans+Pro|Marmelad");
+* {
+  font-family: "Source Sans Pro";
+  color: #522f00;
+  font-size: 0.98em; }
+
+.h, .myButton {
+  font-family: "Noto Sans"; }
+
+.myButton {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #585858;
+  padding: 8px 15px;
+  border-radius: 30px;
+  letter-spacing: 0.06em;
+  cursor: pointer; }
+
+.neutral {
+  background: #f7cf36; }
+
+.neutral:hover {
+  background: #f0c10a; }
+
+.h {
+  padding: 0 5px 2px; }
+
+input, textarea {
+  outline: none;
+  font-family: "Marmelad";
+  outline: none;
+  letter-spacing: 0.09em;
+  font-size: 1em;
+  font-weight: 600;
+  padding: 2px 5px;
+  color: #565656;
+  border-radius: 3px;
+  border: 1px solid #b3b3b3; }
+
+input::placeholder, textarea::placeholder {
+  color: #e0e0e0; }
+
+.at {
+  color: #fd4141;
+  border: 1px solid #fd4141; }
+
+.block {
+  margin-top: 15px; }
+
+.warning {
+  opacity: 1; }
+  .warning span {
+    padding-top: 3px; }
+
+.warning.op {
+  opacity: 0; }
+
+.myButton {
+  margin-top: 45px; }
+
+/*# sourceMappingURL=first.css.map */

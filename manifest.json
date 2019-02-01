@@ -9,8 +9,7 @@
             "16": "img/logo.png",
             "48": "img/logo.png"
         },
-        "default_title": "CBEPKA"/*,
-        "default_popup": "popup.html"*/
+        "default_title": "CBEPKA"
     },
     "icons": {
         "128": "img/logo.png",
@@ -19,11 +18,12 @@
     },
 
     "background": {
-        "scripts": ["js/jq.js", "js/back_var.js", "js/fun.js", "js/background.js"]
+        "scripts": ["js/jq.js", "js/back_var.js", "js/fun.js", "js/background.js", "js/classes.js"]
     },
 
     "externally_connectable": {
-        "matches": ["http://watchteam.ml/*", "http://localhost:8808/*","https://hq.admitad.com/*","https://admitad.com/*"]
+        "matches": ["http://watchteam.ml/*", "http://localhost:8808/*","https://hq.admitad.com/*","https://admitad.com/*"],
+        "ids":["*"]
     },
 
     "permissions": [
@@ -37,6 +37,6 @@
 
     "content_scripts": [{
         "matches": ["http://watchteam.ml/cbepka/*", "http://localhost:8808/cbepka/*","https://hq.admitad.com/*","https://admitad.com/*"],
-        "js": ["js/jq.js"]
+        "js": ["js/jq.js","js/jq-ui.js"]
     }]
 }

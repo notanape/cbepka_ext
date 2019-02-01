@@ -72,8 +72,18 @@ function _checkAuth() {
                 } else if (auth.gToken != null) {
                     if (auth.email == null)
                         _openFirst()
-                    else
+                    else {
+                        if (admId != undefined) {
+                            mainWId = admWId;
+                            mainId = admId;
+                            admWId = admId = undefined;
+                        } else {
+                            mainWId = windowId;
+                            mainId = tabId;
+                            windowId = tabId = undefined;
+                        }
                         _openMain()
+                    }
                 }
             }
         })
@@ -88,7 +98,7 @@ function _openAdm() {
         width: 969,
         height: 727,
         top: Math.round((h - 727) / 2),
-        left: Math.round((w - 865) / 2)
+        left: Math.round((w - 969) / 2)
     }, w => {
         windowId = w.id
         tabId = w.tabs[0].id;
@@ -96,107 +106,155 @@ function _openAdm() {
 }
 
 function _openOAuth() {
-    if (windowId == undefined)
+    if (admWId == undefined)
         chrome.windows.create({
             url: `${server}/oauth?selfid=${selfId}`,
             type: 'panel',
             width: 969,
             height: 727,
             top: Math.round((h - 727) / 2),
-            left: Math.round((w - 865) / 2)
+            left: Math.round((w - 969) / 2)
         }, w => {
-            windowId = w.id
-            tabId = w.tabs[0].id;
+            admWId = w.id
+            admId = w.tabs[0].id;
         })
     else
-        chrome.tabs.update(tabId, {
+        chrome.tabs.update(admId, {
             url: `${server}/oauth?selfid=${selfId}`
         })
 }
 
 function _openFirst() {
-    if (windowId == undefined)
+    if (admWId == undefined)
         chrome.windows.create({
             url: `${server}/first?selfid=${selfId}`,
             type: 'panel',
             width: 969,
             height: 727,
             top: Math.round((h - 727) / 2),
-            left: Math.round((w - 865) / 2)
+            left: Math.round((w - 969) / 2)
         }, w => {
-            windowId = w.id
-            tabId = w.tabs[0].id;
+            admWId = w.id
+            admId = w.tabs[0].id;
         })
     else
-        chrome.tabs.update(tabId, {
+        chrome.tabs.update(admId, {
             url: `${server}/first?selfid=${selfId}`
         })
 }
 
 function _getQueue() {
 
-    fetch(`${server}/queue?selfid=${selfId}`).then(j => j.json()).then(d => {
-        let k = Object.keys(d);
+    $.get(`${server}/queue?selfid=${selfId}`).done(r => {
         ({...queue
-        } = d)
-        if (d.length != 0) {
-            chrome.browserAction.setIcon({
-                path: im
-            })
-        } else {
-            chrome.browserAction.setIcon({
-                path: imD
-            })
-        }
+        } = r)
+        _openMain();
+    }).fail((x, s, e) => {
+        let er = e.toLowerCase();
+        if (er.includes('bad') || x.status >= 400)
+            _getQueue()
     })
 }
 
 function _loadAuth() {
-    fetch(`${server}/loadauth`).then(t => t.text())
+    $.get(`${server}/loadauth`).done(r => {}).fail((x, s, e) => {
+        let er = e.toLowerCase();
+        if (er.includes('bad') || x.status >= 400)
+            _loadAuth()
+    })
+}
+
+function _postFirst() {
+    $.ajax({
+        url: `${server}/first`,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        data: JSON.stringify(info)
+    }).done(r => {
+        for (let i in info.offers)
+            auth.offers.push(i);
+        _getQueue();
+    }).fail((x, s, e) => {
+        if (e.toLowerCase().includes('bad'))
+            _postFirst()
+    })
+}
+
+function _openMain() {
+    auth.offers.sort((a, b) => {
+        let aI = a.toLowerCase();
+        let bI = b.toLowerCase();
+        let aZ = aI[0];
+        let bZ = bI[0];
+        if (aZ > bZ)
+            return 1
+        else if (aZ < bZ)
+            return -1
+        else if (aZ == bZ) {
+            aZ = aI[1];
+            bZ = bI[1];
+            if (aZ > bZ)
+                return 1
+            else if (aZ < bZ)
+                return -1
+            else if (aZ == bZ) {
+                aZ = aI[2];
+                bZ = bI[2];
+                if (aZ > bZ)
+                    return 1
+                else if (aZ < bZ)
+                    return -1
+                else if (aZ == bZ)
+                    return 0
+            }
+        }
+    })
+    if (admWId == undefined)
+        chrome.windows.create({
+            url: `${server}/main?selfid=${selfId}`,
+            type: 'panel',
+            width: 480,
+            height: 710,
+            top: Math.round((h - 710) / 2),
+            left: Math.round((w - 480) / 2)
+        }, w => {
+            mainWId = w.id
+            mainId = w.tabs[0].id;
+        })
+    else {
+        mainWId = admWId;
+        mainId = admId;
+        admWId = admId = undefined;
+        chrome.windows.update(mainWId, {
+            width: 480,
+            height: 710,
+            top: Math.round((h - 710) / 2),
+            left: Math.round((w - 480) / 2)
+        }, r => {
+            chrome.tabs.update(mainId, {
+                url: `${server}/main?selfid=${selfId}`
+            })
+        })
+    }
+
+}
+
+function _findLinks() {
+    linker = new Linker();
+    linker.setObj(process);
+    linker.setTime(dateDown);
+    linker.setExtraHour(1);
+    linker.setSelfId(selfId);
+    linker.forEachLink(linker.getObj(), linker.getTime());
 }
 
 function _clean() {
     gSessionToken = scr = vice = load = adToken = lang = undefined;
     w = h = undefined;
     admId = admWId = undefined;
-    auth = queue = info = {};
-}
-
-function _connectAdmitadHq() {
-    if (admId == undefined)
-        chrome.windows.create({
-            url: `${adUrl}`,
-            type: 'panel',
-            width: 250,
-            height: 50,
-            left: 0,
-            top: 0
-        }, w => {
-            admId = w.tabs[0].id;
-            admWId = w.id;
-            chrome.windows.update(w.id, {
-                state: 'minimized'
-            })
-        })
-    else
-        chrome.windows.update(admWId, {
-            url: `${adUrl}`,
-            type: 'panel',
-            width: 250,
-            height: 50,
-            left: 0,
-            top: 0
-        }, w => {
-            admId = w.tabs[0].id;
-            admWId = w.id;
-            chrome.windows.update(w.id, {
-                state: 'minimized'
-            })
-        })
-}
-
-function _findOfferId() {
-    for (let of in info.offers) {
-        fetch(`${adUrl}/${lang}/toolbox/autocomplete/?term=${of}`).then(r => r.json())
-    }
+    mainId = mainWId = undefined;
+    linker = undefined;
+    auth = queue = info = process = {};
 }

@@ -1,0 +1,21 @@
+@import "common";
+
+.block {
+    margin-top: 15px;
+}
+
+.warning {
+    opacity: 1;
+
+    span {
+        padding-top: 3px;
+    }
+}
+
+.warning.op {
+    opacity: 0;
+}
+
+.myButton {
+    margin-top: 45px;
+}
